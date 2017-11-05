@@ -46,7 +46,7 @@ class LearningAgent(Agent):
         self.t = self.t + 1.0
                 
         if self.testing:
-            self.epsilon = 1.0
+            self.epsilon = 0.0
             self.alpha   = 0.0
         else:
             #self.epsilon = self.epsilon - 0.05
@@ -129,13 +129,18 @@ class LearningAgent(Agent):
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
         if self.learning:
-        	print("learned value")
-        	maxQ=self.get_maxQ(state)
-        	maxq_actions = [action for action in self.Q[state].keys() if self.Q[state][action] == maxQ]
-        	action=random.choice(maxq_actions)
+        	  if random.random()<=self.epsilon:
+        	  	action=random.choice(self.valid_actions) 
+        	  	print("Learning Action",action)       	     		  
+        	  else:
+        			maxQ=self.get_maxQ(state)
+        			maxq_actions = [action for action in self.Q[state].keys() if self.Q[state][action] == maxQ]
+        			action=random.choice(maxq_actions)
+        			      	    
         else:
         	myval=randint(0, 3)
         	action = self.valid_actions[myval]
+        	print("Not Learning Action",action) 
         	
         return action
 
@@ -211,7 +216,7 @@ def run():
     # Flags:
     #   tolerance  - epsilon tolerance before beginning testing, default is 0.05 
     #   n_test     - discrete number of testing trials to perform, default is 0
-    sim.run(n_test=40,tolerance=0.0000000001)
+    sim.run(n_test=30,tolerance=0.00000001)
 
 
 if __name__ == '__main__':
